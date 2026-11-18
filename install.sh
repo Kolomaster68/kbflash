@@ -74,8 +74,12 @@ clang -fobjc-arc -O2 kbflash.m -o "$BIN" -framework Foundation -framework IOKit 
   -F/System/Library/PrivateFrameworks -framework CoreBrightness
 [ -f "$CONF/patterns" ] || cp extras/patterns "$CONF/patterns"
 cp extras/kbflash.zsh "$CONF/kbflash.zsh"
-echo "Built $BIN. Watch your keyboard..."
-"$BIN" done
+echo "Built $BIN."
+echo
+echo "Heads up: kbflash flashes your keyboard backlight. If flashing light affects you"
+echo "(for example photosensitive epilepsy), say no here and make your patterns gentler first:"
+echo "  $CONF/patterns  (the 'breathe' pattern fades instead of flashing)"
+ask "Flash the keyboard once now to test it?" && "$BIN" done
 
 echo
 echo "What should flash it?"

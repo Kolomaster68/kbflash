@@ -17,6 +17,15 @@ Your MacBook doesn't need a glowing logo to tell you something's done. **kbflash
 keyboard backlight, then puts it back exactly as it was. Hook it to Claude Code, Codex, a long
 build, a script, anything. Step away, glance over, see the keys blink.
 
+> [!WARNING]
+> **Flashing lights.** kbflash makes your keyboard backlight flash. If you have photosensitive
+> epilepsy, or flashing or flickering light affects you, please don't use it without talking to
+> your doctor first, and only in a form that's safe for you. You can make it much gentler: use the
+> `breathe` pattern (slow fades, no flashing), slow the steps down, or dim them with a percent
+> instead of `on` (see [Make your own patterns](#make-your-own-patterns)). The installer flashes
+> once to test, so change your patterns first if you need to. Stop using it straight away if you
+> feel unwell, dizzy, or notice changes in your vision.
+
 ## Features
 
 <table>
