@@ -90,10 +90,12 @@ def banner():
             f'<style>{css}.k{{animation:b {total:.2f}s linear infinite}}</style>{DEFS}'
             f'<defs><radialGradient id="g" cx="78%" cy="55%" r="55%"><stop offset="0" stop-color="#3a2f22"/><stop offset="1" stop-color="#111114"/></radialGradient></defs>'
             f'<rect width="1280" height="400" rx="28" fill="url(#g)"/>'
-            f'<text x="72" y="168" font-family="{FONT}" font-size="76" font-weight="700" fill="#f5f5f7" letter-spacing="-2">kbflash</text>'
-            f'<text x="74" y="222" font-family="{FONT}" font-size="26" fill="#b8b8c0">Your keyboard, as a status light.</text>'
-            f'<text x="74" y="258" font-family="{FONT}" font-size="26" fill="#b8b8c0">Flashes when Claude, Codex or a long build is done.</text>'
-            f'<text x="74" y="330" font-family="{FONT}" font-size="18" fill="#8a8a94">Free and open source · Your own patterns · No app to run</text>'
+            # ponytail: text column must end well before the keyboard panel at x=640; fonts on other OSes run wider
+            f'<text x="72" y="150" font-family="{FONT}" font-size="76" font-weight="700" fill="#f5f5f7" letter-spacing="-2">kbflash</text>'
+            f'<text x="74" y="204" font-family="{FONT}" font-size="26" fill="#b8b8c0">Your keyboard, as a status light.</text>'
+            f'<text x="74" y="240" font-family="{FONT}" font-size="26" fill="#b8b8c0">Flashes when Claude, Codex</text>'
+            f'<text x="74" y="276" font-family="{FONT}" font-size="26" fill="#b8b8c0">or a long build is done.</text>'
+            f'<text x="74" y="340" font-family="{FONT}" font-size="18" fill="#8a8a94">Free and open source · Your own patterns</text>'
             f'<rect x="640" y="72" width="588" height="256" rx="20" fill="#141417" opacity=".85"/>'
             f'{keys_svg(parts, "k")}</svg>')
 

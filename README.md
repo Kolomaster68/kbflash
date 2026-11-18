@@ -2,6 +2,8 @@
   <img src="docs/banner.svg" width="100%" alt="kbflash: your keyboard, as a status light. Flashes when Claude, Codex or a long build is done. Beside the text, a MacBook keyboard glows warmly, then flashes off and on three times.">
 </p>
 
+<p align="center"><b>Your keyboard, as a status light.</b><br>Flashes when Claude, Codex or a long build is done.</p>
+
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-one%20command-f5f5f7?style=for-the-badge&labelColor=1f1f24" alt="Install with one command"></a>
 </p>
