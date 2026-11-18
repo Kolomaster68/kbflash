@@ -1,0 +1,19 @@
+# kbflash patterns: name = steps. Edit freely; these override the built-ins.
+# Try one with:  kbflash NAME      List them with:  kbflash --list
+#
+# A step is LEVEL/MS:
+#   on   your level if the keyboard is lit, 100% if it's dark (so it always shows)
+#   off  0%
+#   me   your level
+#   0-100  an exact percent
+# Put ~ in front to fade into a step over its MS instead of switching instantly.
+# xN repeats the steps since the last xN. Every pattern ends back on your level.
+
+done    = off/120 on/120 x3
+ask     = off/150 on/250 x2
+error   = off/120 on/600 off/120 on/150 off/120 on/600
+breathe = ~off/700 ~on/700 x2
+
+# Ideas:
+# heartbeat = off/100 on/100 off/100 on/100 off/700 x2
+# gentle    = ~30/400 ~me/400

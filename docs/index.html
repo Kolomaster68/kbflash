@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kbflash</title>
+
+<style>
+  :root {
+    --bg: #fbfbfd; --fg: #1d1d1f; --muted: #6e6e73; --card: #ffffff; --line: #e5e5ea;
+    --accent: #c46a1b; --code: #f2f2f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0f12; --fg: #f5f5f7; --muted: #a1a1a8; --card: #18181c; --line: #2a2a30;
+      --accent: #f0a050; --code: #1f1f24;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0f12; --fg: #f5f5f7; --muted: #a1a1a8; --card: #18181c; --line: #2a2a30;
+    --accent: #f0a050; --code: #1f1f24;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+  nav { max-width: 760px; margin: 0 auto; padding: 20px 16px; display: flex; justify-content: space-between; align-items: center; }
+  nav b { font-size: 19px; letter-spacing: -0.3px; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 15px; margin-left: 18px; }
+  nav a:hover { color: var(--fg); }
+  h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.08; letter-spacing: -1.2px; margin: 32px 0 14px; }
+  h2 { font-size: 26px; letter-spacing: -0.5px; margin: 56px 0 12px; }
+  h3 { font-size: 17px; margin: 0 0 4px; }
+  p { margin: 0 0 14px; }
+  .lede { font-size: 20px; color: var(--muted); max-width: 620px; }
+  .hero { margin: 28px 0 8px; border-radius: 22px; overflow: hidden; }
+  .hero img { width: 100%; display: block; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; margin: 24px 0 8px; }
+  .btn {
+    display: inline-block; padding: 11px 20px; border-radius: 980px; text-decoration: none;
+    font-weight: 600; font-size: 16px; border: 1px solid var(--line); color: var(--fg); background: var(--card);
+  }
+  .btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .states { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 18px; }
+  .state { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 12px 16px; }
+  .state img { width: 100%; display: block; border-radius: 10px; margin-bottom: 12px; }
+  .state p { color: var(--muted); font-size: 15px; margin: 0; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: s; }
+  ol.steps li { counter-increment: s; position: relative; padding-left: 44px; margin-bottom: 18px; }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--code); color: var(--accent); font-weight: 700; display: grid; place-items: center; font-size: 15px;
+  }
+  pre, code { font: 14px/1.5 ui-monospace, "SF Mono", Menlo, monospace; }
+  code { background: var(--code); padding: 2px 6px; border-radius: 6px; }
+  pre { background: var(--code); padding: 14px 16px; border-radius: 12px; overflow-x: auto; margin: 8px 0 14px; }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 8px 0 14px; }
+  td { border-top: 1px solid var(--line); padding: 9px 10px 9px 0; vertical-align: top; }
+  td:first-child { white-space: nowrap; }
+  details { border-top: 1px solid var(--line); padding: 14px 0; }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; float: right; color: var(--muted); font-weight: 400; }
+  details[open] summary::after { content: "–"; }
+  details p { color: var(--muted); margin: 10px 0 0; }
+  .note { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .note h3 { margin-bottom: 6px; }
+  .note p { color: var(--muted); margin: 0; }
+  a { color: var(--accent); }
+  footer { max-width: 760px; margin: 0 auto; padding: 28px 16px 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  footer a { color: var(--muted); }
+  @media (max-width: 520px) { nav a.hide-sm { display: none; } td:first-child { white-space: normal; } }
+</style>
+</head>
+<body>
+<nav>
+  <b>kbflash</b>
+  <span>
+    <a class="hide-sm" href="#patterns">Patterns</a>
+    <a class="hide-sm" href="#questions">Questions</a>
+    <a href="https://github.com/Kolomaster68/kbflash">GitHub</a>
+  </span>
+</nav>
+
+<main>
+  <h1>Make your MacBook keyboard flash when Claude Code needs you</h1>
+  <p class="lede">kbflash turns your keyboard backlight into a status light. Claude Code, Codex, a long
+  build or your own script: when it's done, the keys blink, then go back exactly as they were.</p>
+
+  <div class="btns">
+    <a class="btn primary" href="#set-up">Set it up</a>
+    <a class="btn" href="https://github.com/Kolomaster68/kbflash">View on GitHub</a>
+  </div>
+
+  <div class="hero"><img src="banner.svg" alt="A MacBook keyboard glowing warmly, then flashing off and on three times."></div>
+
+  <h2>What the keyboard does</h2>
+  <p>It works with whatever state the backlight is in, and always ends on your level.</p>
+  <div class="states">
+    <div class="state"><img src="media/lit.svg" alt="A lit keyboard dips off and back on three times.">
+      <h3>Lit</h3><p>Dips off and back to your level.</p></div>
+    <div class="state"><img src="media/dark.svg" alt="A dark keyboard pulses to full three times, then goes dark.">
+      <h3>Dark</h3><p>Pulses to full, then back to dark.</p></div>
+    <div class="state"><img src="media/idle.svg" alt="A timed-out keyboard wakes, flashes three times, then fades back to dark.">
+      <h3>Timed out</h3><p>Wakes at your level, flashes, then sleeps again.</p></div>
+  </div>
+
+  <h2 id="set-up">How to set it up</h2>
+  <ol class="steps">
+    <li><b>Install it.</b> In Terminal:
+      <pre><code>git clone https://github.com/Kolomaster68/kbflash.git &amp;&amp; ./kbflash/install.sh</code></pre>
+      It needs Apple's command line tools (<code>xcode-select --install</code>).</li>
+    <li><b>Choose what flashes it.</b> The installer asks about Claude Code, Codex, and terminal
+      commands that run longer than 30 seconds. Say yes to the ones you want.</li>
+    <li><b>Work as usual.</b> When something's done or needs you, the keyboard tells you.</li>
+  </ol>
+
+  <h2>Use it with anything</h2>
+  <p>Anything that can run a command can flash your keyboard.</p>
+  <pre><code>kbflash -- make build          # done or error, by how it went
+npm test; kbflash done         # or just after it
+kbflash --until-back 30 ask    # keep flashing till you're back</code></pre>
+  <p>Other agents' hooks, Shortcuts, <code>cron</code>, git hooks, Hammerspoon: point them at
+  <code>kbflash</code> and a pattern name.</p>
+
+  <h2 id="patterns">Make the flashes yours</h2>
+  <p>Patterns are a line each in <code>~/.config/kbflash/patterns</code>. Edit them, or add your own.</p>
+  <pre><code>done      = off/120 on/120 x3
+ask       = off/150 on/250 x2
+error     = off/120 on/600 off/120 on/150 off/120 on/600
+breathe   = ~off/700 ~on/700 x2
+heartbeat = off/100 on/100 off/100 on/100 off/700 x2</code></pre>
+  <table>
+    <tr><td><code>on/150</code></td><td>Light for 150 ms. Your level if the keyboard is lit, full if it's dark.</td></tr>
+    <tr><td><code>off/150</code></td><td>Dark for 150 ms.</td></tr>
+    <tr><td><code>me/150</code>, <code>40/150</code></td><td>Your own level, or an exact percent.</td></tr>
+    <tr><td><code>~on/700</code></td><td>Fade into it instead of switching.</td></tr>
+    <tr><td><code>x3</code></td><td>Repeat the steps since the last <code>x</code>.</td></tr>
+  </table>
+
+  <h2>Your work stays private</h2>
+  <div class="note">
+    <h3>It only learns that something happened</h3>
+    <p>Hooks run kbflash with a pattern name, nothing else. It never sees your prompts, code or
+    commands, and nothing is stored or sent anywhere. <code>./install.sh --uninstall</code> removes
+    every hook it added.</p>
+  </div>
+
+  <h2 id="questions">Questions</h2>
+  <details><summary>Which Macs does it work on?</summary>
+    <p>MacBooks with a backlit keyboard. It's tested on an M5 MacBook Pro with macOS 27. External keyboards aren't supported.</p></details>
+  <details><summary>Can it damage the backlight?</summary>
+    <p>No. The keys are lit by LEDs, and macOS already dims, brightens and switches them off all day. A few short flashes is nothing next to that.</p></details>
+  <details><summary>Will the brightness slider still work?</summary>
+    <p>Yes. kbflash sets brightness the way the slider does and ends on your level. Your keys, slider and auto-brightness all keep working.</p></details>
+  <details><summary>Why doesn't it flash in a bright room?</summary>
+    <p>With "Adjust keyboard brightness in low light" on, macOS holds the backlight off in bright light and ignores changes. kbflash leaves it be, and a flash would be hard to see then anyway.</p></details>
+  <details><summary>Will it keep working after macOS updates?</summary>
+    <p>Probably, but it uses a private Apple interface, so an update could change it. If that happens it flashes less or not at all, and touches nothing else.</p></details>
+  <details><summary>How much is it?</summary>
+    <p>Free and open source, under the MIT license.</p></details>
+</main>
+
+<footer>
+  kbflash is free and open source on <a href="https://github.com/Kolomaster68/kbflash">GitHub</a>.
+  Inspired by <a href="https://github.com/Ark0N/LogoLight">LogoLight</a> and
+  <a href="https://backglow.app/macbook-logo-claude-code">Backglow</a>, which light up the glowing
+  logo on the new MacBook Pro.<br>
+  Not made by or affiliated with Apple, Anthropic or OpenAI.
+</footer>
+</body>
+</html>
