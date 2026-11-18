@@ -13,10 +13,15 @@
 // Lit, dark or idle-dimmed, it ends on your level. In a bright room (macOS holding it off) it does nothing.
 #import <Foundation/Foundation.h>
 #import <IOKit/IOKitLib.h>
+#import <CoreGraphics/CoreGraphics.h>
 #include <sys/file.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <spawn.h>
+#include <signal.h>
+
+static volatile sig_atomic_t stopping; // set by SIGTERM/INT/HUP: cut the flash short, but still put your level back
+static void onSignal(int sig) { (void)sig; stopping = 1; }
 
 extern char **environ;
 
@@ -40,6 +45,10 @@ static NSString *const BUILTINS =
   @"ask     = off/150 on/250 x2\n"
   @"error   = off/120 on/600 off/120 on/150 off/120 on/600\n"
   @"breathe = ~off/700 ~on/700 x2\n";
+
+// Your level is written here for the length of a flash. If a flash is force-killed (or the Mac
+// loses power) mid-flash, the next run finds it and puts your level back first.
+static const char *RESTORE = "/tmp/kbflash.restore";
 
 static KeyboardBrightnessClient *c;
 static unsigned long long k;
@@ -101,8 +110,19 @@ static void set(float v, int fadeMs) {
   else [c setBrightness:v forKeyboard:k];
 }
 
-// Play once (pattern already validated). 0 = played, 1 = skipped (bright room).
+// Is the built-in screen on? With it asleep (or the lid closed) macOS turns the keyboard off and
+// reports its level as 0, so a flash can't show and would save 0 as your level.
+static BOOL builtInScreenOn(void) {
+  CGDirectDisplayID ids[16]; uint32_t n = 0;
+  CGGetOnlineDisplayList(16, ids, &n);
+  for (uint32_t i = 0; i < n; i++)
+    if (CGDisplayIsBuiltin(ids[i])) return CGDisplayIsActive(ids[i]) && !CGDisplayIsAsleep(ids[i]);
+  return NO;
+}
+
+// Play once (pattern already validated). 0 = played, 1 = skipped.
 static int play(NSString *text) {
+  if (!builtInScreenOn()) return 1;
   BOOL sup = HAS(isBacklightSuppressedOnKeyboard:) && [c isBacklightSuppressedOnKeyboard:k];
   BOOL dim = HAS(isBacklightDimmedOnKeyboard:) && [c isBacklightDimmedOnKeyboard:k];
   BOOL canWake = HAS(suspendIdleDimming:forKeyboard:);
@@ -116,10 +136,16 @@ static int play(NSString *text) {
   if (dim) usleep(WAKE_MS * 1000);
 
   float me = [c brightnessForKeyboard:k];
+  // Woken from idle but still reading 0: macOS is keeping it off for some other reason, and 0 isn't
+  // your level. Writing anything now would save it, so leave it.
+  if (dim && me < 0.01f) { [c suspendIdleDimming:NO forKeyboard:k]; return 1; }
+  FILE *f = fopen(RESTORE, "w");
+  if (f) { fprintf(f, "%f\n", me); fclose(f); }
   Step steps[MAX_STEPS];
   int n = parse(text, me, steps);
-  for (int i = 0; i < n; i++) { set(steps[i].level, steps[i].fade ? steps[i].ms : 0); usleep(steps[i].ms * 1000); }
+  for (int i = 0; i < n && !stopping; i++) { set(steps[i].level, steps[i].fade ? steps[i].ms : 0); usleep(steps[i].ms * 1000); }
   set(me, 0);
+  unlink(RESTORE);
 
   if (canWake) [c suspendIdleDimming:NO forKeyboard:k];
   return 0;
@@ -179,14 +205,25 @@ int main(int argc, char **argv) { @autoreleasepool {
   if (!ids.count) { fprintf(stderr, "kbflash: no keyboard backlight found\n"); return cmd ? status : 1; }
   k = [ids[0] unsignedLongLongValue];
 
+  FILE *f = fopen(RESTORE, "r"); // a previous flash died mid-way: put its level back
+  float was;
+  if (f) {
+    if (fscanf(f, "%f", &was) == 1 && was >= 0 && was <= 1) set(was, 0);
+    if (HAS(suspendIdleDimming:forKeyboard:)) [c suspendIdleDimming:NO forKeyboard:k]; // it died holding this too
+    fclose(f); unlink(RESTORE);
+  }
+
+  struct sigaction sa = { .sa_handler = onSignal }; // no SA_RESTART, so a signal wakes usleep/sleep early
+  sigaction(SIGTERM, &sa, NULL); sigaction(SIGINT, &sa, NULL); sigaction(SIGHUP, &sa, NULL);
+
   NSDate *start = [NSDate date];
   play(text);
   // --until-back: keep flashing while nobody has touched the Mac since we started.
-  while (every > 0) {
+  while (every > 0 && !stopping) {
     sleep(every < 5 ? 5 : every);
     double away = -[start timeIntervalSinceNow];
     if (idleSeconds() < away || away > MAX_AWAY_S) break;
-    play(text);
+    if (!stopping) play(text);
   }
   return status;
 }}

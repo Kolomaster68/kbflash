@@ -160,10 +160,20 @@ hardest to see.
 
 **Until you're back.** `--until-back` reads `HIDIdleTime` from IOKit, the time since the last key
 press or touch. Once that's shorter than the time since the first flash, you're back, and it
-stops. It gives up after an hour.
+stops. It gives up after an hour. A flash doesn't count as activity, and it doesn't keep your Mac
+or screen awake.
+
+**Screen asleep, lid closed.** macOS switches the keyboard off with the built-in screen and reports
+its level as 0. A flash can't show then, and putting "0" back would save it as your level, so
+kbflash checks the screen first (`CGDisplayIsAsleep`) and does nothing. As a second guard, if the
+keyboard still reads 0 after waking it from idle, it leaves it alone.
 
 **One at a time.** A lock in `/tmp/kbflash.lock` makes a second flash skip while one is running,
 so it can't mistake the first one's "off" for your level.
+
+**Interrupted.** Stopped mid-flash (Ctrl-C, `kill`, logging out), it puts your level back first.
+Your level is also kept in `/tmp/kbflash.restore` while a flash runs, so if one is force-killed,
+the next run puts it back and switches idle dimming on again.
 
 </details>
 
@@ -175,6 +185,15 @@ so it can't mistake the first one's "off" for your level.
 MacBooks with a backlit keyboard. It's tested on an M5 MacBook Pro with macOS 27. It checks for
 each call before using it, so where one is missing it does less rather than failing. External
 keyboards aren't supported.
+</details>
+
+<details>
+<summary><b>What if I've been away a long time?</b></summary>
+<br>
+Once the keyboard times out, it still flashes: kbflash wakes it, flashes, and lets it time out
+again. Once your screen goes to sleep, it can't: macOS keeps the keyboard off with the screen, so
+kbflash waits. <code>--until-back</code> carries on checking and flashes again if the screen comes
+back on. If your Mac goes to sleep, nothing runs, your agent included.
 </details>
 
 <details>

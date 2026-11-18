@@ -70,7 +70,7 @@ fi
 
 command -v clang >/dev/null || { echo "kbflash needs Apple's command line tools: xcode-select --install"; exit 1; }
 mkdir -p "$(dirname "$BIN")" "$CONF"
-clang -fobjc-arc -O2 kbflash.m -o "$BIN" -framework Foundation -framework IOKit \
+clang -fobjc-arc -O2 kbflash.m -o "$BIN" -framework Foundation -framework IOKit -framework CoreGraphics \
   -F/System/Library/PrivateFrameworks -framework CoreBrightness
 [ -f "$CONF/patterns" ] || cp extras/patterns "$CONF/patterns"
 cp extras/kbflash.zsh "$CONF/kbflash.zsh"

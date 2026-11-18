@@ -156,6 +156,8 @@ heartbeat = off/100 on/100 off/100 on/100 off/700 x2</code></pre>
     <p>MacBooks with a backlit keyboard. It's tested on an M5 MacBook Pro with macOS 27. External keyboards aren't supported.</p></details>
   <details><summary>Can it damage the backlight?</summary>
     <p>No. The keys are lit by LEDs, and macOS already dims, brightens and switches them off all day. A few short flashes is nothing next to that.</p></details>
+  <details><summary>What if I've been away a long time?</summary>
+    <p>Once the keyboard times out, it still flashes: kbflash wakes it, flashes, then lets it time out again. Once your screen goes to sleep it can't, because macOS keeps the keyboard off with the screen, so kbflash waits and touches nothing.</p></details>
   <details><summary>Will the brightness slider still work?</summary>
     <p>Yes. kbflash sets brightness the way the slider does and ends on your level. Your keys, slider and auto-brightness all keep working.</p></details>
   <details><summary>Why doesn't it flash in a bright room?</summary>
