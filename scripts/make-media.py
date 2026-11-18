@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Draw kbflash's README/site media as animated SVGs, with kbflash's real timing.
-python3 scripts/make-media.py   ->  docs/banner.svg, docs/media/{lit,dark,idle}.svg
+python3 scripts/make-media.py   ->  docs/banner-v2.svg, docs/media/{lit,dark,idle}.svg
 """
 from pathlib import Path
 
@@ -102,7 +102,7 @@ def banner():
 
 if __name__ == "__main__":
     (OUT / "media").mkdir(parents=True, exist_ok=True)
-    (OUT / "banner.svg").write_text(banner())
+    (OUT / "banner-v2.svg").write_text(banner())
     for name in SCENES:
         (OUT / "media" / f"{name}.svg").write_text(scene(name))
     # self-check: every scene ends where it started (a flash always puts your level back)

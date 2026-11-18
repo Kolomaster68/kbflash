@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.svg" width="100%" alt="kbflash: your keyboard, as a status light. Flashes when Claude, Codex or a long build is done. Beside the text, a MacBook keyboard glows warmly, then flashes off and on three times.">
+  <img src="docs/banner-v2.svg" width="100%" alt="kbflash: your keyboard, as a status light. Flashes when Claude, Codex or a long build is done. Beside the text, a MacBook keyboard glows warmly, then flashes off and on three times.">
 </p>
 
 <p align="center"><b>Your keyboard, as a status light.</b><br>Flashes when Claude, Codex or a long build is done.</p>
